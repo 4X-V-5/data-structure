@@ -19,28 +19,6 @@ void Printlist(SeqList L);                          // Print sequence list
 int Empty(SeqList L);                               // To judge if the list is empty
 void DestroyList(SeqList &L);                       // Destroy given list and release space
 
-int main()
-{
-    int temp = 0;
-    SeqList L;
-    InitList(L, 10);
-    std::cout << "length after initialization:" << Length(L) << "\n";
-    std::cout << "empty:" << Empty(L) << "\n";
-    std::cout << ListInsert(L, 1, 1) << "\n";
-    std::cout << ListInsert(L, 2, 2) << "\n";
-    std::cout << ListInsert(L, 3, 3) << "\n";
-    Printlist(L);
-    std::cout << Length(L) << "\n";
-    std::cout << ListInsert(L, 5, 5) << "\n";
-    std::cout << ListDelete(L, 2, temp) << "\n";
-    std::cout << temp << "\n";
-    Printlist(L);
-    std::cout << Length(L) << "\n";
-    DestroyList(L);
-    std::cout << "empty:" << Empty(L) << "\n";
-    return 0;
-}
-
 
 void InitList(SeqList &L, int size)
 {
