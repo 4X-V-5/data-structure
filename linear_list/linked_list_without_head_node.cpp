@@ -4,19 +4,20 @@
 // Strcuture declaration
 typedef struct LNode
 {
-    ElemType data;
-    struct LNode *next;
+    ElemType data;                                   // Data
+    struct LNode *next;                              // Pointer to the next node
+    LNode(ElemType x):data(x), next(NULL) {}         // Constructor
 }LNode, *LinkList;
 
 // Basic operations
-void InitList(LinkList &L);                           // Modify header node for linked list
+void InitList(LinkList &L);                          // Initialize list
 int Length(LinkList L);                              // Return the length of given linked list
 LNode *LocateElem(LinkList L, ElemType e);           // Return the first node with given value
 LNode *GetElem(LinkList L, int p);                   // Return node in given position
 LinkList List_HeadInsert(LinkList &L);               // Create Linked list using head insert
 LinkList List_TailInsert(LinkList &L);               // Create Linked list using tail insert
 int ListInsert(LinkList &L, int p, ElemType e);      // Insert element e to given position
-int ListDelete(LinkList &L, int p, ElemType &e);     // Delete element in given opsition and return it to e
+int ListDelete(LinkList &L, int p, ElemType &e);     // Delete element in given opsition, return its value to e
 void Printlist(LinkList L);                          // Print linked list
 int Empty(LinkList L);                               // To judge if the list is empty
 void DestroyList(LinkList &L);                       // Destroy given list and release space
@@ -44,28 +45,30 @@ int main()
 
 void InitList(LinkList &L)
 {
-    // Modify header node for linked list
-    // Header node stores current length of the linked list
     L = NULL;
 }
 
 int Length(LinkList L)
 {
     // Return the length of given linked list
-    int count = 0;
+
+    int length = 0;
     LNode *p = L;
+    // Scan list, length increase 1 until meets the last node
     while(p)
     {
-        count++;
+        length++;
         p = p->next;
     }
-    return count;
+    return length;
 }
 
 LNode *LocateElem(LinkList L, ElemType e)
 {
     // Return the first node with given value
+
     LNode *p = L;
+    // Scan list until value matches
     while(p && p->data != e)
         p = p->next;
 
@@ -75,9 +78,12 @@ LNode *LocateElem(LinkList L, ElemType e)
 LNode *GetElem(LinkList L, int p)
 {
     // Return node in given position
+
     LNode *n = L;
-    if(p < 1)
+    // If the position is illegal, fails
+    if(p<1 || p>Length(L))
         return NULL;
+    // Scan list until reach the given position
     for(int i=1; i<p; i++)
     {
         n = n->next;
@@ -88,21 +94,27 @@ LNode *GetElem(LinkList L, int p)
 LinkList List_HeadInsert(LinkList &L)
 {
     // Create Linked list using head insert
-    LNode *dummy = new LNode;
+
+    // Set dummy node to create a virtual head node
+    LNode *dummy = new LNode(0);
     dummy->next = L;
+    // Pointer to new node
     LNode *p;
+    // Value of the new node
     ElemType x;
     std::cout << "Enter data:";
     std::cin >> x;
     while(x != 9999)
     {
-        p = new LNode;
-        p->data = x;
+        // Allocate space for the new node
+        p = new LNode(x);
+        // Insert
         p->next = dummy->next;
         dummy->next = p;
         std::cout << "Enter data:";
         std::cin >> x;
     }
+    // Delete dummy node
     L = dummy->next;
     delete dummy;
     return L;
@@ -111,22 +123,27 @@ LinkList List_HeadInsert(LinkList &L)
 LinkList List_TailInsert(LinkList &L)
 {
     // Create Linked list using head insert
-    LNode *dummy = new LNode, *r = dummy;
+
+    // Set dummy node to create a virtual head node
+    LNode *dummy = new LNode(0), *r = dummy;
     dummy->next = L;
+    // Pointer to new node
     LNode *p;
+    // Value of the new node
     ElemType x;
     std::cout << "Enter data:";
     std::cin >> x;
     while(x != 9999)
     {
-        p = new LNode;
-        p->data = x;
-        p->next = NULL;
+        // Allocate space for the new node
+        p = new LNode(x);
+        // Insert
         r->next = p;
         r = r->next;
         std::cout << "Enter data:";
         std::cin >> x;
     }
+    // Delete dummy node
     L = dummy->next;
     delete dummy;
     return L;
@@ -135,19 +152,23 @@ LinkList List_TailInsert(LinkList &L)
 int ListInsert(LinkList &L, int p, ElemType e)
 {
     // Insert element e to given position
-    if(p > Length(L)+1)
+
+    // If the positon is illegal, insertion fails
+    if( p<1|| p>Length(L)+1 )
         return 0;
-    LNode *dummy = new LNode;
+    // Set dummy node to create a virtual head node
+    LNode *dummy = new LNode(0);
     dummy->next = L;
     LNode *pre = dummy;
-    LNode *newNode = new LNode;
-    newNode->data = e;
+    LNode *newNode = new LNode(e);
 
+    // Scan to the previous position of the position to be inserted
     for(int i=1; i<p; i++)
         pre = pre->next;
-    
+    // Insert
     newNode->next = pre->next;
     pre->next = newNode;
+    // Delete dummy node
     L = dummy->next;
     delete dummy;
     return 1;
@@ -155,20 +176,24 @@ int ListInsert(LinkList &L, int p, ElemType e)
 
 int ListDelete(LinkList &L, int p, ElemType &e)
 {
-    // Delete element in given opsition and return it to e
-    if(p > Length(L))
+    // Delete element in given opsition, return its value to e
+    
+    // If the position id illegal, deletion fails
+    if( p<1 || p>Length(L) )
         return 0;
-    LNode *dummy = new LNode;
+    // Set dummy node to create a virtual head node
+    LNode *dummy = new LNode(0);
     dummy->next = L;
     LNode *pre = dummy;
-
+    // Scan to the previous position of the position to be deleted
     for(int i=1; i<p; i++)
         pre = pre->next;
-    
+    // Delete
     LNode *delNode = pre->next;
     e = delNode->data;
     pre->next = delNode->next;
     delete delNode;
+    // Delete dummy node
     L = dummy->next;
     delete dummy;
     return 1;
@@ -178,6 +203,7 @@ void Printlist(LinkList L)
 {
     // Print linked list
     LNode *p = L;
+    // Scan list and print each element
     while(p)
     {
         std::cout << p->data << " ";
@@ -188,13 +214,18 @@ void Printlist(LinkList L)
 
 int Empty(LinkList L)
 {
+    // If the list is empty, return 1
+    // Else return 0
+
     return !L;
 }
 
 void DestroyList(LinkList &L)
 {
     // Destroy given list and release space
+
     LNode *p;
+    // Scan list and release space for each node 
     while(L)
     {
         p = L->next;
